@@ -25,6 +25,10 @@ func resourceAwsIoTAuthorizer() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
+			"arn": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
 			"name": {
 				Type:     schema.TypeString,
 				Required: true,
@@ -93,6 +97,7 @@ func resourceAwsIotAuthorizerCreate(d *schema.ResourceData, meta interface{}) er
 	}
 
 	d.SetId(aws.StringValue(out.AuthorizerName))
+	d.Set("arn", out.AuthorizerArn)
 
 	return resourceAwsIotAuthorizerRead(d, meta)
 }
@@ -125,6 +130,7 @@ func resourceAwsIotAuthorizerRead(d *schema.ResourceData, meta interface{}) erro
 	if err := d.Set("token_signing_public_keys", authorizer.TokenSigningPublicKeys); err != nil {
 		return fmt.Errorf("Error setting token signing keys for IoT Authrozer: %s", err)
 	}
+	d.Set("arn", authorizer.AuthorizerArn)
 
 	return nil
 }
